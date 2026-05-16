@@ -26,7 +26,6 @@ public class LuaErrorAssert {
         return clean;
     }
 
-
     public static boolean checkBoolean(LuaValue value, String funcName, int argNum) {
         if (!value.isboolean()) {
             throw new LuaError("[LuaCraft] Bad Argument #" + argNum + " to '" + funcName + "' Boolean expected, got " + value.typename());

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.example.sandbox.position.PositionLib;
+import org.example.sandbox.world.World;
+import org.example.sandbox.world.events.ServerEvent;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
@@ -53,6 +56,11 @@ public class ScriptHandler {
         loaded.set("io", LuaValue.NIL);
         loaded.set("debug", LuaValue.NIL);
         loaded.set("luajava", LuaValue.NIL);
+
+
+        globals.set("World", new World());
+        globals.set("ServerEvent", new ServerEvent());
+        globals.set("Position", PositionLib.positionFactory());
 
         // Force them to stick within the scripts folder for requiring for safety reasons
         LuaValue pkg = globals.get("package");
