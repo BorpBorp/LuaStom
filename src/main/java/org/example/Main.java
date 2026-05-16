@@ -1,5 +1,6 @@
 package org.example;
 
+import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -7,6 +8,7 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.block.Block;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -16,6 +18,9 @@ public class Main {
         System.out.println("Hello World");
         //initialize the server
         MinecraftServer server = MinecraftServer.init();
+
+        //auth
+        MinecraftServer.init(new Auth.Online())
 
         //create the instance/world
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
@@ -29,6 +34,11 @@ public class Main {
 
         //add an event handler to handle spawning!
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+
+        //lighting
+        instanceContainer.setChunkSupplier(LightingChunk::new);
+
+
 
         globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             final Player player = event.getPlayer();
