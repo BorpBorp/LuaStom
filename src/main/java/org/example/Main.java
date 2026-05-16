@@ -20,7 +20,7 @@ public class Main {
         MinecraftServer server = MinecraftServer.init();
 
         //auth
-        MinecraftServer.init(new Auth.Online())
+        MinecraftServer.init(new Auth.Online());
 
         //create the instance/world
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
