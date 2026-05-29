@@ -1,5 +1,5 @@
 package org.example.sandbox.world;
 
-public class WorldLib {
+public class Generator {
     
 }
