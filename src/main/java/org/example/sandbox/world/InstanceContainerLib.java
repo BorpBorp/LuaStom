@@ -5,7 +5,6 @@ import java.io.File;
 import org.example.LuaErrorAssert;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 import net.minestom.server.instance.DynamicChunk;
@@ -18,9 +17,9 @@ public class InstanceContainerLib extends LuaTable {
     public InstanceContainerLib(InstanceContainer container) {
         this.instanceContainer = container;
         
-        rawset("SetWorldName", new OneArgFunction() {
+        rawset("SetWorldName", new TwoArgFunction() {
             @Override
-            public LuaValue call(LuaValue name) {
+            public LuaValue call(LuaValue self, LuaValue name) {
                 container.setChunkLoader(new AnvilLoader("worlds/" + LuaErrorAssert.checkString(name, "SetWorldName", 1)));
                 new File("worlds", LuaErrorAssert.checkString(name, "SetWorldName", 1)).mkdirs();
 
@@ -28,9 +27,9 @@ public class InstanceContainerLib extends LuaTable {
             }
         });
 
-        rawset("SetGenerator", new OneArgFunction() {
+        rawset("SetGenerator", new TwoArgFunction() {
             @Override
-            public LuaValue call(LuaValue callback) {
+            public LuaValue call(LuaValue self, LuaValue callback) {
                 container.setGenerator(unit -> {
                     LuaErrorAssert.checkFunction(callback, "SetGenerator", 1).call(new GenerationUnitLib(unit));
                 });
@@ -38,9 +37,9 @@ public class InstanceContainerLib extends LuaTable {
             }
         });
 
-        rawset("ToggleLighting", new OneArgFunction() {
+        rawset("ToggleLighting", new TwoArgFunction() {
             @Override
-            public LuaValue call(LuaValue toggle) {
+            public LuaValue call(LuaValue self, LuaValue toggle) {
                 if (LuaErrorAssert.checkBoolean(toggle, "ToggleLighting", 1)) {
                     container.setChunkSupplier(LightingChunk::new);
                 } else {

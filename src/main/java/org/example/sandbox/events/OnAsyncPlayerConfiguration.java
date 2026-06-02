@@ -1,6 +1,7 @@
 package org.example.sandbox.events;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.example.sandbox.entities.PlayerLib;
 import org.example.sandbox.world.InstanceContainerLib;
@@ -12,21 +13,18 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 
-public class AsyncPlayerConfiguration  {
-    GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+public class OnAsyncPlayerConfiguration {
     private static final Logger logger = LoggerFactory.getLogger("LuaCraft AsyncPlayerConfigurationEvent");
 
-    public AsyncPlayerConfiguration(Map<String, Globals> allGlobals) {
-        globalEventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
+    public static void handle(AsyncPlayerConfigurationEvent event, ConcurrentHashMap<String, Globals> allGlobals) {
+        for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
             LuaValue player = new PlayerLib(event.getPlayer());
-            for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
-                LuaValue serverEvent = entry.getValue().get("ServerEvent");
-                LuaValue function = serverEvent.get("AsyncPlayerConfiguration");
+            
+            LuaValue serverEvent = entry.getValue().get("ServerEvent");
+                LuaValue function = serverEvent.get("OnAsyncPlayerConfiguration");
 
                 LuaTable luaEventTable = new LuaTable();
 
@@ -70,7 +68,6 @@ public class AsyncPlayerConfiguration  {
                         logger.error(baseMsg);
                     }
                 }
-            }
-        });
+        }
     }
 }

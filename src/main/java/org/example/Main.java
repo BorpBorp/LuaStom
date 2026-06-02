@@ -1,32 +1,23 @@
 package org.example;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.example.sandbox.events.AsyncPlayerConfiguration;
-import org.example.sandbox.events.PickupItem;
-import org.example.sandbox.events.PlayerBlockBreak;
 import org.luaj.vm2.Globals;
 
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 
 public class Main {
-    static Map<String, Globals> allGlobals = new HashMap<>();
-
     public static void main(String[] args) {
-        //initialize the server
-        MinecraftServer server = MinecraftServer.init();
-
         //auth
-        MinecraftServer.init(new Auth.Online());
+        MinecraftServer server = MinecraftServer.init(new Auth.Online());
+
+        ConcurrentHashMap<String, Globals> allGlobals = new ConcurrentHashMap<>();
 
         new ScriptGeneration();
         ScriptHandler.loadAllScripts(allGlobals, true);
 
-        new AsyncPlayerConfiguration(allGlobals);
-        new PlayerBlockBreak(allGlobals);
-        new PickupItem(allGlobals);
+        MinecraftServer.getCommandManager().register(new LuaCommand(allGlobals, ScriptHandler.getScriptsFolder()));
 
         //allow me to join
         server.start("0.0.0.0", 25565);

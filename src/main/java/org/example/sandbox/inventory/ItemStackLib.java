@@ -3,8 +3,9 @@ package org.example.sandbox.inventory;
 import org.example.LuaErrorAssert;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
 
+import net.kyori.adventure.key.Key;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
@@ -14,10 +15,10 @@ public class ItemStackLib extends LuaTable {
     public static LuaTable creator() {
         LuaTable tbl = new LuaTable();
 
-        tbl.set("New", new TwoArgFunction() {
+        tbl.set("New", new ThreeArgFunction() {
             @Override
-            public LuaValue call(LuaValue item, LuaValue amt) {
-                Material itemMat = Material.fromKey(LuaErrorAssert.checkString(item, "ItemStack.New", 1));
+            public LuaValue call(LuaValue self, LuaValue item, LuaValue amt) {
+                Material itemMat = Material.fromKey(Key.key(LuaErrorAssert.checkString(item, "ItemStack.New", 1)));
                 int amount = LuaErrorAssert.checkInt(amt, "ItemStack.New", 2);
 
                 return new ItemStackLib(ItemStack.of(itemMat, amount));

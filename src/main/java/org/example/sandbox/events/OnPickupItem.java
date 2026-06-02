@@ -1,6 +1,7 @@
 package org.example.sandbox.events;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.example.sandbox.entities.ItemLib;
 import org.example.sandbox.entities.LivingEntityLib;
@@ -11,21 +12,17 @@ import org.luaj.vm2.LuaValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.item.PickupItemEvent;
 
-public class PickupItem {
-    GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+public class OnPickupItem {
     private static final Logger logger = LoggerFactory.getLogger("LuaCraft PickupItemEvent");
 
-    public PickupItem(Map<String, Globals> allGlobals) {
-        globalEventHandler.addListener(PickupItemEvent.class, event -> {
-            LuaValue livingEntity = new LivingEntityLib(event.getLivingEntity());
+    public static void handle(PickupItemEvent event, ConcurrentHashMap<String, Globals> allGlobals) {
+        LuaValue livingEntity = new LivingEntityLib(event.getLivingEntity());
             LuaValue itemEntity = new ItemLib(event.getItemEntity());
 
-            for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
-                LuaValue serverEvent = entry.getValue().get("ServerEvent");
+        for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
+            LuaValue serverEvent = entry.getValue().get("ServerEvent");
                 LuaValue function = serverEvent.get("OnPickupItem");
 
                 LuaTable luaEventTable = new LuaTable();
@@ -59,7 +56,6 @@ public class PickupItem {
                         logger.error(baseMsg);
                     }
                 }
-            }
-        });
+        }
     }
 }

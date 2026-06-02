@@ -1,6 +1,7 @@
 package org.example.sandbox.events;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.example.sandbox.entities.PlayerLib;
 import org.example.sandbox.position.BlockVecLib;
@@ -12,22 +13,18 @@ import org.luaj.vm2.LuaValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
 
-public class PlayerBlockBreak {
-    GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
+public class OnPlayerBlockBreak {
     private static final Logger logger = LoggerFactory.getLogger("LuaCraft PlayerBlockBreakEvent");
 
-    public PlayerBlockBreak(Map<String, Globals> allGlobals) {
-        globalEventHandler.addListener(PlayerBlockBreakEvent.class, event -> {
-            LuaValue player = new PlayerLib(event.getPlayer());
-            LuaValue block = new BlockLib(event.getBlock());
-            LuaValue blockPosition = new BlockVecLib(event.getBlockPosition());
+    public static void handle(PlayerBlockBreakEvent event, ConcurrentHashMap<String, Globals> allGlobals) {
+        LuaValue player = new PlayerLib(event.getPlayer());
+        LuaValue block = new BlockLib(event.getBlock());
+        LuaValue blockPosition = new BlockVecLib(event.getBlockPosition());
 
-            for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
-                LuaValue serverEvent = entry.getValue().get("ServerEvent");
+        for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
+            LuaValue serverEvent = entry.getValue().get("ServerEvent");
                 LuaValue function = serverEvent.get("OnPlayerBlockBreak");
 
                 LuaTable luaEventTable = new LuaTable();
@@ -62,7 +59,6 @@ public class PlayerBlockBreak {
                         logger.error(baseMsg);
                     }
                 }
-            }
-        });
+        }
     }
 }
