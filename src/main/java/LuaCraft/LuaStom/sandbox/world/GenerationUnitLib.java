@@ -22,5 +22,12 @@ public class GenerationUnitLib extends LuaTable {
                 return new PointLib(unit.absoluteStart());
             }
         });
+
+        rawset("GetSize", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return new PointLib(unit.size());
+            }
+        });
     }
 }

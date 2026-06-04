@@ -5,6 +5,7 @@ import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
+import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
 import net.minestom.server.coordinate.Point;
@@ -54,6 +55,27 @@ public class PointLib extends LuaTable {
 
                     return PointLib.this;
                 }
+            }
+        });
+
+        rawset("GetX", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(point.x());
+            }
+        });
+
+        rawset("GetY", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(point.y());
+            }
+        });
+
+        rawset("GetZ", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(point.z());
             }
         });
     }
