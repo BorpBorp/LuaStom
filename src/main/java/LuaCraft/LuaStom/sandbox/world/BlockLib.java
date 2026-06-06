@@ -10,7 +10,13 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 
 public class BlockLib extends LuaTable {
+    private Block block;
+    private BlockVec blockVec;
+
     public BlockLib(Block block, @Nullable Instance instance, BlockVec position) {
+        this.block = block;
+        this.blockVec = position;
+
         rawset("GetName", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
@@ -24,5 +30,13 @@ public class BlockLib extends LuaTable {
                 return new ChunkLib(instance.getChunk(position.chunkX(), position.chunkZ()));
             }
         });
+    }
+
+    public Block getBlock() {
+        return block;
+    }
+
+    public BlockVec getBlockPosition() {
+        return blockVec;
     }
 }
