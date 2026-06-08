@@ -104,6 +104,18 @@ public class InstanceContainerLib extends LuaTable {
                 return new ChunkLib(container.getChunkAt(LuaErrorAssert.checkDouble(x, "Instance:GetChunkAt", 1), LuaErrorAssert.checkDouble(z, "Instance:GetChunkAt", 2)));
             }
         });
+
+        rawset("LoadChunk", new ThreeArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue x, LuaValue z) {
+                container.loadChunk(
+                    LuaErrorAssert.checkInt(x, "Instance:LoadChunk", 1),
+                    LuaErrorAssert.checkInt(z, "Instance:LoadChunk", 2)
+                );
+
+                return InstanceContainerLib.this;
+            }
+        });
     }
 
     public InstanceContainer getContainer() {

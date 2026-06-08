@@ -10,7 +10,11 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.instance.generator.UnitModifier;
 
 public class UnitModifierLib extends LuaTable {
+    private UnitModifier modifier;
+
     public UnitModifierLib(UnitModifier modifier) {
+        this.modifier = modifier;
+
         rawset("SetFillHeight", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue minMaxHeight, LuaValue block) {
@@ -29,5 +33,9 @@ public class UnitModifierLib extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+    }
+
+    public UnitModifier getModifier() {
+        return modifier;
     }
 }
