@@ -141,5 +141,23 @@ public class PlayerLib extends LivingEntityLib {
                 return PlayerLib.this;
             }
         });
+
+        rawset("SwingMainHand", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue othersOnly) {
+                player.swingMainHand(LuaErrorAssert.checkBoolean(othersOnly, "Player:SwingMainHand", 1));
+
+                return PlayerLib.this;
+            }
+        });
+
+        rawset("SwingOffHand", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue othersOnly) {
+                player.swingOffHand(LuaErrorAssert.checkBoolean(othersOnly, "Player:SwingOffHand", 1));
+
+                return PlayerLib.this;
+            }
+        });
     }
 }

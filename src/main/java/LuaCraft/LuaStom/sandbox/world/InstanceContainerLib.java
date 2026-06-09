@@ -11,7 +11,6 @@ import org.luaj.vm2.lib.TwoArgFunction;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
-import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.DynamicChunk;
