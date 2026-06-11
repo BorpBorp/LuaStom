@@ -52,6 +52,7 @@ public class OnPlayerBlockPlace {
         LuaValue player = new PlayerLib(event.getPlayer());
         LuaValue block = new BlockLib(event.getBlock(), event.getPlayer().getInstance(), event.getBlockPosition());
         LuaValue blockPos = new PointLib(event.getBlockPosition());
+        LuaValue cursorPos = new PointLib(event.getCursorPosition());
         LuaTable eventTable = Objects.requireNonNull(luaEventTable.get());
 
         for (Map.Entry<String, Globals> entry : allGlobals.entrySet()) {
@@ -62,7 +63,8 @@ public class OnPlayerBlockPlace {
             eventTable.set("Block", block);
             eventTable.set("ShouldPlace", setCancelled);
             eventTable.set("SetBlock", setBlock);
-            eventTable.set("BlockPosition", blockPos);
+            eventTable.set("TargetPosition", blockPos);
+            eventTable.set("CursorPosition", cursorPos);
 
             if (!function.isnil() && function.isfunction()) {
                     try {

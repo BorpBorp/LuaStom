@@ -159,5 +159,19 @@ public class PlayerLib extends LivingEntityLib {
                 return PlayerLib.this;
             }
         });
+
+        rawset("GetYaw", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(player.getPosition().yaw());
+            }
+        });
+
+        rawset("GetFacing", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(player.getPosition().facing().toString());
+            }
+        });
     }
 }

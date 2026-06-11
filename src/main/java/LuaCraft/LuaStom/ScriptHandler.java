@@ -30,6 +30,7 @@ import LuaCraft.LuaStom.sandbox.thread.RunSync;
 import LuaCraft.LuaStom.sandbox.thread.RunSyncWithLock;
 import LuaCraft.LuaStom.sandbox.thread.Timer;
 import LuaCraft.LuaStom.sandbox.world.BiomeBuilderLib;
+import LuaCraft.LuaStom.sandbox.world.BlockLib;
 import LuaCraft.LuaStom.sandbox.world.FastSimplexBuilderLib;
 import LuaCraft.LuaStom.sandbox.world.StructureLib;
 import LuaCraft.LuaStom.sandbox.world.World;
@@ -83,6 +84,7 @@ public class ScriptHandler {
         globals.set("Items", Enumerations.ItemEnums());
         globals.set("Blocks", Enumerations.BlockEnums());
         globals.set("LogLevel", Enumerations.LogEnums());
+        globals.set("Tags", Enumerations.TagEnums());
 
         // Add libraries into the default scope that do not need another object to be
         // accessed
@@ -99,6 +101,7 @@ public class ScriptHandler {
         globals.set("Timer", new Timer());
         globals.set("Structure", StructureLib.creator());
         globals.set("Biome", BiomeBuilderLib.creator());
+        globals.set("Block", BlockLib.creator());
 
         // Add thread related functions
         globals.set("NextTick", new NextTick());

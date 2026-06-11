@@ -13,12 +13,14 @@ import net.kyori.adventure.key.Key;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.registry.Registry;
+import net.minestom.server.registry.RegistryTag;
 
 public class BlockLib extends LuaTable {
     private Block block;
     private Point blockVec;
 
-    public LuaTable creator() {
+    public static LuaTable creator() {
         LuaTable tbl = new LuaTable();
 
         tbl.set("New", new TwoArgFunction() {
@@ -70,6 +72,15 @@ public class BlockLib extends LuaTable {
             }
         });
 
+        rawset("GetProperty", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue prop) {
+                String property = block.getProperty(LuaErrorAssert.checkString(prop, "Block:GetProperty", 1));
+
+                return LuaValue.valueOf(property);
+            }
+        });
+
         rawset("IsAir", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
@@ -81,6 +92,18 @@ public class BlockLib extends LuaTable {
             @Override
             public LuaValue call(LuaValue self) {
                 return new PointLib(position);
+            }
+        });
+
+        rawset("HasTag", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue tag) {
+                Registry<Block> registry = Block.staticRegistry();
+                RegistryTag<Block> dataTag = registry
+                        .getTag(Key.key(LuaErrorAssert.checkString(tag, "Block:HasTag", 1)));
+                if (dataTag == null)
+                    return LuaValue.FALSE;
+                return LuaValue.valueOf(dataTag.contains(block));
             }
         });
     }

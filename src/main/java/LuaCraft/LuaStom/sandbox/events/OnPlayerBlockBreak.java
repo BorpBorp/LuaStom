@@ -37,7 +37,7 @@ public class OnPlayerBlockBreak {
 
             eventTable.set("Player", player);
             eventTable.set("Block", block);
-            eventTable.set("BlockPosition", blockPosition);
+            eventTable.set("TargetPosition", blockPosition);
 
             if (!function.isnil() && function.isfunction()) {
                 try {
