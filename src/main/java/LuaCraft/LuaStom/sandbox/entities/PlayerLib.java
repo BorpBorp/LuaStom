@@ -9,12 +9,14 @@ import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.component.ComponentLib;
 import LuaCraft.LuaStom.sandbox.component.ComponentUtil;
 import LuaCraft.LuaStom.sandbox.inventory.DefaultInventoryHandlerLib;
+import LuaCraft.LuaStom.sandbox.inventory.ItemStackLib;
 import LuaCraft.LuaStom.sandbox.inventory.PlayerInventoryLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.PlayerHand;
 import net.minestom.server.tag.Tag;
 
 public class PlayerLib extends LivingEntityLib {
@@ -139,6 +141,51 @@ public class PlayerLib extends LivingEntityLib {
                 player.setFlyingSpeed(LuaErrorAssert.checkFloat(speed, "Player:SetFlySpeed", 1));
 
                 return PlayerLib.this;
+            }
+        });
+        rawset("SetEXP", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue EXP) {
+                player.setExp(LuaErrorAssert.checkFloat(EXP, "Player:SetEXP", 1));
+                return PlayerLib.this;
+            }
+        });
+        rawset("GetEXP", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                var exp = player.getExp();
+                return LuaValue.valueOf(exp);
+            }
+        });
+        rawset("SwingMainHand", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue othersOnly) {
+                player.swingMainHand(LuaErrorAssert.checkBoolean(othersOnly, "Player:SwingMainHand", 1));
+
+                return PlayerLib.this;
+            }
+        });
+
+        rawset("SwingOffHand", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue othersOnly) {
+                player.swingOffHand(LuaErrorAssert.checkBoolean(othersOnly, "Player:SwingOffHand", 1));
+
+                return PlayerLib.this;
+            }
+        });
+
+        rawset("GetYaw", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(player.getPosition().yaw());
+            }
+        });
+
+        rawset("GetFacing", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(player.getPosition().facing().toString());
             }
         });
     }
