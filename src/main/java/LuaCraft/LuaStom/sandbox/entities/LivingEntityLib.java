@@ -5,7 +5,6 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
-import LuaCraft.LuaStom.sandbox.inventory.PlayerInventoryLib;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
@@ -14,17 +13,6 @@ public class LivingEntityLib extends EntityLib {
     public LivingEntityLib(LivingEntity entity) {
         super(entity);
 
-        rawset("GetInventory", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                if (entity instanceof Player player) {
-                    return new PlayerInventoryLib(player.getInventory(), player);
-                }
-
-                // TODO: Possibly this entire one isn't needed if we can just get a player from the entity???
-                return LivingEntityLib.this;
-            }
-        });
         rawset("damage", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue damage) {
@@ -32,12 +20,14 @@ public class LivingEntityLib extends EntityLib {
                 return LivingEntityLib.this;
             }
         });
+        
         rawset("GetHealth", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
                 return LuaValue.valueOf(entity.getHealth());
             }
         });
+
         rawset("IsPlayer", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {

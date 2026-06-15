@@ -143,6 +143,7 @@ public class PlayerLib extends LivingEntityLib {
                 return PlayerLib.this;
             }
         });
+
         rawset("SetEXP", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue EXP) {
@@ -150,6 +151,7 @@ public class PlayerLib extends LivingEntityLib {
                 return PlayerLib.this;
             }
         });
+        
         rawset("GetEXP", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
@@ -157,6 +159,7 @@ public class PlayerLib extends LivingEntityLib {
                 return LuaValue.valueOf(exp);
             }
         });
+        
         rawset("SetLevel", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue exp) {
@@ -164,6 +167,7 @@ public class PlayerLib extends LivingEntityLib {
                 return PlayerLib.this;
             } 
         });
+
         rawset("GetLevel", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
@@ -171,6 +175,23 @@ public class PlayerLib extends LivingEntityLib {
                 return LuaValue.valueOf(level);
             }
         });
+
+        rawset("SetEXP", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue EXP) {
+                player.setExp(LuaErrorAssert.checkFloat(EXP, "Player:SetEXP", 1));
+                return PlayerLib.this;
+            }
+        });
+        
+        rawset("GetEXP", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                var exp = player.getExp();
+                return LuaValue.valueOf(exp);
+            }
+        });
+
         rawset("SwingMainHand", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue othersOnly) {
@@ -186,20 +207,6 @@ public class PlayerLib extends LivingEntityLib {
                 player.swingOffHand(LuaErrorAssert.checkBoolean(othersOnly, "Player:SwingOffHand", 1));
 
                 return PlayerLib.this;
-            }
-        });
-
-        rawset("GetYaw", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(player.getPosition().yaw());
-            }
-        });
-
-        rawset("GetFacing", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(player.getPosition().facing().toString());
             }
         });
     }
