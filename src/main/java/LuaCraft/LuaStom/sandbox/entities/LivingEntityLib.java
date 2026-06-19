@@ -1,5 +1,6 @@
 package LuaCraft.LuaStom.sandbox.entities;
 
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
@@ -10,38 +11,78 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
 
 public class LivingEntityLib extends EntityLib {
-    public LivingEntityLib(LivingEntity entity) {
-        super(entity);
+    private LivingEntity entity;
 
-        rawset("damage", new TwoArgFunction() {
+    public static final LuaTable LIVINGENTITY_METATABLE = new LuaTable();
+
+    static {
+        LIVINGENTITY_METATABLE.rawset("__index", LIVINGENTITY_METATABLE);
+
+        LIVINGENTITY_METATABLE.rawset("damage", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue damage) {
-                entity.damage(DamageType.GENERIC, LuaErrorAssert.checkInt(damage, "entity:damage", 1));
-                return LivingEntityLib.this;
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+
+                    lEntity.damage(DamageType.GENERIC, LuaErrorAssert.checkInt(damage, "entity:damage", 1));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
             }
         });
         
-        rawset("GetHealth", new OneArgFunction() {
+        LIVINGENTITY_METATABLE.rawset("GetHealth", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(entity.getHealth());
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+
+                    return LuaValue.valueOf(lEntity.getHealth());
+                } else {
+                    return LuaValue.NIL;
+                }
             }
         });
 
-        rawset("IsPlayer", new OneArgFunction() {
+        LIVINGENTITY_METATABLE.rawset("IsPlayer", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(entity instanceof Player);
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+
+                    return LuaValue.valueOf(lEntity instanceof Player);
+                } else {
+                    return LuaValue.FALSE;
+                }
             }
         });
 
-        rawset("AsPlayer", new OneArgFunction() {
+        LIVINGENTITY_METATABLE.rawset("AsPlayer", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                if (entity instanceof Player player) return new PlayerLib(player);
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
 
-                return LuaValue.NIL;
+                    if (lEntity instanceof Player ply) return new PlayerLib(ply);
+
+                    return LuaValue.NIL;
+                } else {
+                    return LuaValue.NIL;
+                }
             }
         });
+    }
+
+    public LivingEntityLib(LivingEntity entity) {
+        super(entity);
+
+        this.entity = entity;
+        this.setmetatable(ENTITY_METATABLE);
+    }
+
+    @Override
+    public LivingEntity getEntity() {
+        return entity;
     }
 }

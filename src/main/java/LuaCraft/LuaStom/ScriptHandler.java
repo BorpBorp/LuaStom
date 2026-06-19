@@ -27,6 +27,7 @@ import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import LuaCraft.LuaStom.sandbox.server.ServerLib;
 import LuaCraft.LuaStom.sandbox.thread.NextTick;
+import LuaCraft.LuaStom.sandbox.thread.RunAsync;
 import LuaCraft.LuaStom.sandbox.thread.RunSync;
 import LuaCraft.LuaStom.sandbox.thread.RunSyncWithLock;
 import LuaCraft.LuaStom.sandbox.thread.Timer;
@@ -111,6 +112,7 @@ public class ScriptHandler {
         globals.set("NextTick", new NextTick());
         globals.set("Sync", new RunSync());
         globals.set("SyncWithLock", new RunSyncWithLock());
+        globals.set("Async", new RunAsync());
 
         // Force them to stick within the scripts folder for requiring for safety
         // reasons

@@ -230,35 +230,6 @@ public class PlayerLib extends LivingEntityLib {
             }
         });
 
-        PLAYER_METATABLE.rawset("SetEXP", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue EXP) {
-                if (self instanceof PlayerLib playerLib) {
-                    Player ply = playerLib.getEntity();
-
-                    ply.setExp(LuaErrorAssert.checkFloat(EXP, "Player:SetEXP", 1));
-
-                    return self;
-                } else {
-                    return LuaValue.NIL;
-                }
-            }
-        });
-
-        PLAYER_METATABLE.rawset("GetEXP", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                if (self instanceof PlayerLib playerLib) {
-                    Player ply = playerLib.getEntity();
-
-                    var exp = ply.getExp();
-                    return LuaValue.valueOf(exp);
-                } else {
-                    return LuaValue.NIL;
-                }
-            }
-        });
-
         PLAYER_METATABLE.rawset("SetLevel", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue exp) {
@@ -345,10 +316,15 @@ public class PlayerLib extends LivingEntityLib {
                 }
             }
         });
+
+        PLAYER_METATABLE.setmetatable(LIVINGENTITY_METATABLE);
     }
 
     public PlayerLib(Player player) {
         super(player);
+
+        this.player = player;
+        this.setmetatable(PLAYER_METATABLE);
     }
 
     @Override

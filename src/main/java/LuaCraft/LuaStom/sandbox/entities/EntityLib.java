@@ -6,10 +6,10 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
-import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import LuaCraft.LuaStom.sandbox.world.InstanceContainerLib;
+import LuaCraft.LuaStom.sandbox.world.InstanceLib;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.instance.InstanceContainer;
@@ -17,71 +17,110 @@ import net.minestom.server.instance.InstanceContainer;
 public class EntityLib extends LuaTable {
     private Entity entity;
 
-    public EntityLib(Entity entity) {
-        this.entity = entity;
+    public static final LuaTable ENTITY_METATABLE = new LuaTable();
 
-        rawset("SetInstance", new ThreeArgFunction() {
+    static {
+        ENTITY_METATABLE.rawset("__index", ENTITY_METATABLE);
+
+        ENTITY_METATABLE.rawset("SetInstance", new ThreeArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue inst, LuaValue pos) {
-                if (inst instanceof InstanceContainerLib) {
-                    InstanceContainer instance = ((InstanceContainerLib) inst).getContainer();
-
-                    if (pos instanceof PointLib) {
-                        entity.setInstance(instance, ((PointLib) pos).getPoint());
-                    }
+                if (!(self instanceof EntityLib entityLib)) {
+                    return LuaValue.NIL;
                 }
 
-                return EntityLib.this;
+                if (!(inst instanceof InstanceContainerLib container)) {
+                    return LuaValue.NIL; 
+                }
+
+                if (!(pos instanceof PositionLib position)) {
+                    return LuaValue.NIL;
+                }
+
+                Entity ent = entityLib.getEntity();
+                InstanceContainer instance = container.getContainer();
+                Pos instancePosition = position.getPoint();
+
+                ent.setInstance(instance, instancePosition);
+
+                return self;
             }
         });
 
-        rawset("GetInstance", new OneArgFunction() {
+        ENTITY_METATABLE.rawset("GetInstance", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                if (entity.getInstance() instanceof InstanceContainer container) {
-                    return new InstanceContainerLib(container);
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+
+                    return new InstanceLib(ent.getInstance());
                 } else {
                     return LuaValue.NIL;
                 }
             }
         });
 
-        rawset("GetPosition", new OneArgFunction() {
+        ENTITY_METATABLE.rawset("GetPosition", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
-                return new PointLib(entity.getPosition());
-            }
-        });
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
 
-        rawset("GetYaw", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(entity.getPosition().yaw());
-            }
-        });
-
-        rawset("GetFacing", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                return LuaValue.valueOf(entity.getPosition().facing().toString());
-            }
-        });
-
-        rawset("Teleport", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue position) {
-                if (position instanceof PositionLib) {
-                    Pos newPoint = ((PositionLib) position).getPoint();
-
-                    entity.teleport(newPoint);
-
-                    return EntityLib.this;
+                    return new PointLib(ent.getPosition());
                 } else {
-                    LuaErrorAssert.LuaStomError("Entity:Teleport requires a position, received unknown value");
                     return LuaValue.NIL;
                 }
             }
         });
+
+        ENTITY_METATABLE.rawset("GetYaw", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+
+                    return LuaValue.valueOf(ent.getPosition().yaw());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+
+        ENTITY_METATABLE.rawset("GetFacing", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+
+                    return LuaValue.valueOf(ent.getPosition().facing().toString());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+
+        ENTITY_METATABLE.rawset("Teleport", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue pos) {
+                if (!(self instanceof EntityLib entityLib)) {
+                    return LuaValue.NIL;
+                }
+                if (!(pos instanceof PositionLib position)) {
+                    return LuaValue.NIL;
+                }
+
+                Entity ent = entityLib.getEntity();
+                Pos newPosition = position.getPoint();
+
+                ent.teleport(newPosition);
+
+                return self;
+            }
+        });
+    }
+
+    public EntityLib(Entity entity) {
+        this.entity = entity;
     }
 
     public Entity getEntity() {

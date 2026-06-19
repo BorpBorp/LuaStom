@@ -2,29 +2,23 @@ package LuaCraft.LuaStom.sandbox.world;
 
 import java.io.File;
 
-import org.luaj.vm2.LuaError;
-import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
-import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
-import LuaCraft.LuaStom.sandbox.position.PointLib;
-import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.DynamicChunk;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.anvil.AnvilLoader;
-import net.minestom.server.instance.block.Block;
 
-public class InstanceContainerLib extends LuaTable {
+public class InstanceContainerLib extends InstanceLib {
     private InstanceContainer instanceContainer;
     private String instanceName = "world";
 
     public InstanceContainerLib(InstanceContainer container) {
         this.instanceContainer = container;
+        super(container);
 
         rawset("UseDefaultLoader", new OneArgFunction() {
             @Override
@@ -72,71 +66,6 @@ public class InstanceContainerLib extends LuaTable {
             @Override
             public LuaValue call(LuaValue self) {
                 return new ChunkLoaderLib(container.getChunkLoader());
-            }
-        });
-
-        rawset("UnloadChunk", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue chunk) {
-                if (chunk instanceof ChunkLib) {
-                    container.unloadChunk(((ChunkLib) chunk).getChunk());
-
-                    return InstanceContainerLib.this;
-                } else {
-                    throw new LuaError("UnloadChunk expects a Chunk, received unknown value");
-                }
-            }
-        });
-
-        rawset("GetChunks", new OneArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self) {
-                LuaTable chunks = new LuaTable();
-
-                for (Chunk chunk : container.getChunks()) {
-                    chunks.insert(chunks.length() + 1, new ChunkLib(chunk));
-                }
-
-                return chunks;
-            }
-        });
-
-        rawset("GetChunkAt", new ThreeArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue x, LuaValue z) {
-                return new ChunkLib(container.getChunkAt(LuaErrorAssert.checkDouble(x, "Instance:GetChunkAt", 1), LuaErrorAssert.checkDouble(z, "Instance:GetChunkAt", 2)));
-            }
-        });
-
-        rawset("LoadChunk", new ThreeArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue x, LuaValue z) {
-                container.loadChunk(
-                    LuaErrorAssert.checkInt(x, "Instance:LoadChunk", 1),
-                    LuaErrorAssert.checkInt(z, "Instance:LoadChunk", 2)
-                );
-
-                return InstanceContainerLib.this;
-            }
-        });
-
-        rawset("GetBlock", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue pos) {
-                Point position = ((PointLib) pos).getPoint();
-                Block block = instanceContainer.getBlock(position);
-                return new BlockLib(block, instanceContainer, position);
-            }
-        });
-
-        rawset("SetBlock", new ThreeArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue pos, LuaValue block) {
-                Block newBlock = ((BlockLib) block).getBlock();
-
-                instanceContainer.setBlock(((PointLib) pos).getPoint(), newBlock);
-
-                return LuaValue.NIL;
             }
         });
     }
