@@ -96,6 +96,13 @@ public class InstanceLib extends LuaTable {
                 return LuaValue.NIL;
             }
         });
+
+        rawset("GetUUID", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                return LuaValue.valueOf(instance.getUuid().toString());
+            }
+        });
     }
 
     public Instance getInstance() {
