@@ -6,6 +6,7 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
+import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import LuaCraft.LuaStom.sandbox.world.InstanceContainerLib;
@@ -98,6 +99,18 @@ public class EntityLib extends LuaTable {
                 }
             }
         });
+        ENTITY_METATABLE.rawset("GetOnGround", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.isOnGround());
+
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
 
         ENTITY_METATABLE.rawset("Teleport", new TwoArgFunction() {
             @Override
@@ -117,7 +130,88 @@ public class EntityLib extends LuaTable {
                 return self;
             }
         });
+        ENTITY_METATABLE.rawset("GetGravity", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.hasNoGravity());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("SetGravity", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue gravity) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    ent.setNoGravity(LuaErrorAssert.checkBoolean(gravity, "Entity:SetGravity", 1));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("GetIsInvisible", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.isInvisible());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("SetInvisible", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue gravity) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    ent.setInvisible(LuaErrorAssert.checkBoolean(gravity, "Entity:SetInvisible", 1));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("GetHeadRotation", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.getHeadRotation());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("GetEyeHeight", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.getEyeHeight());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        ENTITY_METATABLE.rawset("GetHeadRotation", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof EntityLib entityLib) {
+                    Entity ent = entityLib.getEntity();
+                    return LuaValue.valueOf(ent.getHeadRotation());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
     }
+
+
 
     public EntityLib(Entity entity) {
         this.entity = entity;
