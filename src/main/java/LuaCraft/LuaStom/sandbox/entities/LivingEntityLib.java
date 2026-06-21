@@ -72,6 +72,8 @@ public class LivingEntityLib extends EntityLib {
                 }
             }
         });
+
+        LIVINGENTITY_METATABLE.setmetatable(ENTITY_METATABLE);
     }
 
     public LivingEntityLib(LivingEntity entity) {
