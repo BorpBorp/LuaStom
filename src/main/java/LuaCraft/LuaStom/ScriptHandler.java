@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +131,10 @@ public class ScriptHandler {
             return;
         }
 
+        allScriptFiles.sort((a, b) -> 
+            Integer.compare(getFilePriority(b), getFilePriority(a))
+        );
+
         if (firstLoad) {
             logger.info("Collecting all lua script files...");
             LuaCraft.LuaStom.sandbox.events.EventHandler eventHandler = new LuaCraft.LuaStom.sandbox.events.EventHandler();
@@ -137,9 +142,30 @@ public class ScriptHandler {
             eventHandler.initListeners(allGlobals);
         }
 
+        Globals sharedGlobals = JsePlatform.standardGlobals();
+        setupScriptGlobals(sharedGlobals, "shared");
+
+        for (File file : allScriptFiles) {
+            if (getFilePriority(file) > 0) {
+                try {
+                    LuaValue script = sharedGlobals.load(readScriptFile(file).fileContents(), file.getName());
+                    script.call();
+                } catch (IOException e) {}
+            }
+        }
+
         for (File file : allScriptFiles) {
             Globals globals = JsePlatform.standardGlobals();
             setupScriptGlobals(globals, file.getName());
+
+            LuaValue key = LuaValue.NIL;
+            while (true) {
+                Varargs entry = sharedGlobals.next(key);
+                if (entry.arg1().isnil()) break;
+                key = entry.arg1();
+                if (key.tojstring().equals("ServerEvent")) continue;
+                globals.set(key, entry.arg(2));
+            }
 
             FileData data = null;
             try {
@@ -220,5 +246,15 @@ public class ScriptHandler {
             }
         }
         return result;
+    }
+
+    private static int getFilePriority(File file) {
+        try {
+            List<String> lines = Files.readAllLines(file.toPath());
+            if (!lines.isEmpty() && lines.get(0).startsWith("-- @Priority")) {
+                return Integer.parseInt(lines.get(0).replace("-- @Priority", "").trim());
+            }
+        } catch (Exception e) {}
+        return 0; // default priority
     }
 }
