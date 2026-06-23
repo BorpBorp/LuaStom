@@ -57,7 +57,28 @@ public class LivingEntityLib extends EntityLib {
                 }
             }
         });
-
+        LIVINGENTITY_METATABLE.rawset("GetFireTicks", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    return LuaValue.valueOf((int)lEntity.getFireTicks());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        LIVINGENTITY_METATABLE.rawset("SetFireTicks", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue ticks) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    lEntity.setFireTicks(LuaErrorAssert.checkInt(ticks, "LivingEntity:SetFireTicks", 2));
+                    return self;
+                }
+                return LuaValue.NIL;
+            }
+        });
         LIVINGENTITY_METATABLE.rawset("AsPlayer", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
@@ -72,7 +93,7 @@ public class LivingEntityLib extends EntityLib {
                 }
             }
         });
-
+        
         LIVINGENTITY_METATABLE.setmetatable(ENTITY_METATABLE);
     }
 
