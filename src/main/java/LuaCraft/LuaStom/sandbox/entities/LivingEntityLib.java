@@ -79,6 +79,18 @@ public class LivingEntityLib extends EntityLib {
                 return LuaValue.NIL;
             }
         });
+        LIVINGENTITY_METATABLE.rawset("Kill", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    lEntity.kill();
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
         LIVINGENTITY_METATABLE.rawset("AsPlayer", new OneArgFunction() {
             @Override
             public LuaValue call(LuaValue self) {
