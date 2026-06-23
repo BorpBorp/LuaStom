@@ -327,6 +327,52 @@ public class PlayerLib extends LivingEntityLib {
                 }
             } 
         });
+        PLAYER_METATABLE.rawset("GetFood", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+                    return LuaValue.valueOf(ply.getFood());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        PLAYER_METATABLE.rawset("SetFood", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue food) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+                    ply.setFood(LuaErrorAssert.checkInt(food, "Player:SetFood", 2));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        PLAYER_METATABLE.rawset("GetSaturation", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+                    return LuaValue.valueOf(ply.getFoodSaturation());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        PLAYER_METATABLE.rawset("SetSaturation", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue saturation) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+                    ply.setFoodSaturation(LuaErrorAssert.checkFloat(saturation, "Player:SetSaturation", 2));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
         PLAYER_METATABLE.setmetatable(LIVINGENTITY_METATABLE);
     }
 
