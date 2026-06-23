@@ -130,6 +130,17 @@ public class PlayerLib extends LivingEntityLib {
                 }
             }
         });
+        PLAYER_METATABLE.rawset("GetUsername", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+                    return LuaValue.valueOf(ply.getUsername());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
 
         PLAYER_METATABLE.rawset("SetTag", new ThreeArgFunction() {
             @Override
