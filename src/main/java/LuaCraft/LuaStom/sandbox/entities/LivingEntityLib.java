@@ -105,7 +105,41 @@ public class LivingEntityLib extends EntityLib {
                 }
             }
         });
-        
+        LIVINGENTITY_METATABLE.rawset("GetIsDead", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    return LuaValue.valueOf(lEntity.isDead());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+        LIVINGENTITY_METATABLE.rawset("getCanPickupItem", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    return LuaValue.valueOf(lEntity.canPickupItem());
+                } else {
+                    return LuaValue.NIL;
+                }
+                
+            }
+        });
+        LIVINGENTITY_METATABLE.rawset("SetCanPickUpItem", new TwoArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self, LuaValue pickup) {
+                if (self instanceof LivingEntityLib lEntityLib) {
+                    LivingEntity lEntity = lEntityLib.getEntity();
+                    lEntity.setCanPickupItem(LuaErrorAssert.checkBoolean(pickup, "LivingEntity:SetCanPickUpItem", 2));
+                    return self;
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
         LIVINGENTITY_METATABLE.setmetatable(ENTITY_METATABLE);
     }
 
