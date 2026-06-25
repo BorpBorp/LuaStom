@@ -12,7 +12,7 @@ import org.luaj.vm2.LuaValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import LuaCraft.LuaStom.sandbox.world.ChunkLib;
+import LuaCraft.LuaStom.sandbox.instance.ChunkLib;
 import net.minestom.server.event.instance.InstanceChunkLoadEvent;
 
 public class OnChunkLoad {

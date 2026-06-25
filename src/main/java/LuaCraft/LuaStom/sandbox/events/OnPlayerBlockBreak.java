@@ -9,18 +9,31 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.TwoArgFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.entities.PlayerLib;
+import LuaCraft.LuaStom.sandbox.instance.BlockLib;
 import LuaCraft.LuaStom.sandbox.position.BlockVecLib;
-import LuaCraft.LuaStom.sandbox.world.BlockLib;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
 
 public class OnPlayerBlockBreak {
     private static final Logger logger = LoggerFactory.getLogger("LuaCraft PlayerBlockBreakEvent");
     private static final ThreadLocal<@NonNull LuaTable> luaEventTable = ThreadLocal.withInitial(LuaTable::new);
     private static final ThreadLocal<PlayerBlockBreakEvent> currentEvent = new ThreadLocal<>();
+
+    private static final TwoArgFunction setCanBreak = new TwoArgFunction() {
+        @Override
+        public LuaValue call(LuaValue self, LuaValue shouldBreak) {
+            PlayerBlockBreakEvent event = currentEvent.get();
+
+            event.setCancelled(!LuaErrorAssert.checkBoolean(shouldBreak, "ShouldBreak", 1));
+
+            return LuaValue.NIL;
+        }
+    };
 
     public static void handle(PlayerBlockBreakEvent event, ConcurrentHashMap<String, Globals> allGlobals) {
         currentEvent.set(event);
@@ -38,6 +51,7 @@ public class OnPlayerBlockBreak {
             eventTable.set("Player", player);
             eventTable.set("Block", block);
             eventTable.set("TargetPosition", blockPosition);
+            eventTable.set("ShouldBreak", setCanBreak);
 
             if (!function.isnil() && function.isfunction()) {
                 try {

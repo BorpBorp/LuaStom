@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import LuaCraft.LuaStom.sandbox.entities.PlayerLib;
-import LuaCraft.LuaStom.sandbox.world.InstanceContainerLib;
+import LuaCraft.LuaStom.sandbox.instance.InstanceContainerLib;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 
 public class OnAsyncPlayerConfiguration {

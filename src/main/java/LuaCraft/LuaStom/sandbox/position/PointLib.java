@@ -5,6 +5,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
@@ -18,14 +19,12 @@ public class PointLib extends LuaTable {
     public static LuaValue creator() {
         LuaTable tbl = new LuaTable();
 
-        tbl.set("New", new VarArgFunction() {
+        tbl.set("New", new ThreeArgFunction() {
             @Override
-            public LuaValue invoke(Varargs args) {
-                if (args.narg() < 4) throw new LuaError("Point.New requires 3 numbers");
-
-                Double x = LuaErrorAssert.checkDouble(args.arg(2), "Point.New", 1);
-                Double y = LuaErrorAssert.checkDouble(args.arg(3), "Point.New", 2);
-                Double z = LuaErrorAssert.checkDouble(args.arg(4), "Point.New", 3);
+            public LuaValue call(LuaValue p1, LuaValue p2, LuaValue p3) {
+                Double x = LuaErrorAssert.checkDouble(p1, "Point.New", 1);
+                Double y = LuaErrorAssert.checkDouble(p2, "Point.New", 2);
+                Double z = LuaErrorAssert.checkDouble(p3, "Point.New", 3);
 
                 Point newPoint = new Vec(x, y, z);
 

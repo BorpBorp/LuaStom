@@ -9,14 +9,15 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.entities.PlayerLib;
+import LuaCraft.LuaStom.sandbox.instance.BlockLib;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
-import LuaCraft.LuaStom.sandbox.world.BlockLib;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 
 public class OnPlayerBlockInteract {
@@ -32,6 +33,15 @@ public class OnPlayerBlockInteract {
             event.setBlockingItemUse(LuaErrorAssert.checkBoolean(handled, "Event:SetHandled", 1));
 
             return LuaValue.NIL;
+        }
+    };
+
+    private static final OneArgFunction getHand = new OneArgFunction() {
+        @Override
+        public LuaValue call(LuaValue self) {
+            PlayerBlockInteractEvent event = currentEvent.get();
+
+            return LuaValue.valueOf(event.getHand().toString());
         }
     };
 
@@ -52,6 +62,7 @@ public class OnPlayerBlockInteract {
             eventTable.set("Block", block);
             eventTable.set("TargetPosition", blockPosition);
             eventTable.set("SetHandled", setHandled);
+            eventTable.set("GetHand", getHand);
 
             if (!function.isnil() && function.isfunction()) {
                 try {
