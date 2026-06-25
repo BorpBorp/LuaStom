@@ -1,4 +1,4 @@
-package LuaCraft.LuaStom.sandbox.world;
+package LuaCraft.LuaStom.sandbox.instance;
 
 import java.io.File;
 
@@ -14,10 +14,11 @@ import net.minestom.server.instance.anvil.AnvilLoader;
 
 public class InstanceContainerLib extends InstanceLib {
     private InstanceContainer instanceContainer;
-    private String instanceName = "world";
+    private String instanceName;
 
-    public InstanceContainerLib(InstanceContainer container) {
+    public InstanceContainerLib(InstanceContainer container, String instanceName) {
         this.instanceContainer = container;
+        this.instanceName = instanceName;
         super(container);
 
         rawset("UseDefaultLoader", new OneArgFunction() {
@@ -25,15 +26,6 @@ public class InstanceContainerLib extends InstanceLib {
             public LuaValue call(LuaValue self) {
                 container.setChunkLoader(new AnvilLoader("worlds/" + instanceName));
                 new File("worlds", instanceName).mkdirs();
-
-                return InstanceContainerLib.this;
-            }
-        });
-        
-        rawset("SetWorldName", new TwoArgFunction() {
-            @Override
-            public LuaValue call(LuaValue self, LuaValue name) {
-                instanceName = LuaErrorAssert.checkString(name, "SetWorldName", 1);
 
                 return InstanceContainerLib.this;
             }
@@ -72,5 +64,9 @@ public class InstanceContainerLib extends InstanceLib {
 
     public InstanceContainer getContainer() {
         return this.instanceContainer;
+    }
+    
+    public String getName() {
+        return instanceName;
     }
 }

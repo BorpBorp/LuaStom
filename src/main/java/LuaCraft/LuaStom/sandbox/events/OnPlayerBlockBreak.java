@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import LuaCraft.LuaStom.sandbox.entities.PlayerLib;
+import LuaCraft.LuaStom.sandbox.instance.BlockLib;
 import LuaCraft.LuaStom.sandbox.position.BlockVecLib;
-import LuaCraft.LuaStom.sandbox.world.BlockLib;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
 
 public class OnPlayerBlockBreak {

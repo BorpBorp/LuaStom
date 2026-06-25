@@ -1,4 +1,4 @@
-package LuaCraft.LuaStom.sandbox.world;
+package LuaCraft.LuaStom.sandbox.instance;
 
 import org.jetbrains.annotations.Nullable;
 import org.luaj.vm2.LuaTable;

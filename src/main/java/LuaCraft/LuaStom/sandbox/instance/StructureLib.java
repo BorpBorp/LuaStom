@@ -1,4 +1,4 @@
-package LuaCraft.LuaStom.sandbox.world;
+package LuaCraft.LuaStom.sandbox.instance;
 
 import java.util.ArrayList;
 import java.util.List;

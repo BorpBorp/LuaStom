@@ -7,10 +7,10 @@ import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
+import LuaCraft.LuaStom.sandbox.instance.InstanceContainerLib;
+import LuaCraft.LuaStom.sandbox.instance.InstanceLib;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
-import LuaCraft.LuaStom.sandbox.world.InstanceContainerLib;
-import LuaCraft.LuaStom.sandbox.world.InstanceLib;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.instance.InstanceContainer;

@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import LuaCraft.LuaStom.LuaErrorAssert;
 import LuaCraft.LuaStom.sandbox.entities.PlayerLib;
+import LuaCraft.LuaStom.sandbox.instance.BlockLib;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
-import LuaCraft.LuaStom.sandbox.world.BlockLib;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
 
 public class OnPlayerBlockInteract {
