@@ -9,6 +9,7 @@ import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,15 @@ public class OnPlayerBlockInteract {
         }
     };
 
+    private static final OneArgFunction getHand = new OneArgFunction() {
+        @Override
+        public LuaValue call(LuaValue self) {
+            PlayerBlockInteractEvent event = currentEvent.get();
+
+            return LuaValue.valueOf(event.getHand().toString());
+        }
+    };
+
     public static void handle(PlayerBlockInteractEvent event, ConcurrentHashMap<String, Globals> allGlobals) {
         currentEvent.set(event);
 
@@ -52,6 +62,7 @@ public class OnPlayerBlockInteract {
             eventTable.set("Block", block);
             eventTable.set("TargetPosition", blockPosition);
             eventTable.set("SetHandled", setHandled);
+            eventTable.set("GetHand", getHand);
 
             if (!function.isnil() && function.isfunction()) {
                 try {
