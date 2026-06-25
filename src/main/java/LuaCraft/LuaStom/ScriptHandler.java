@@ -29,6 +29,7 @@ import LuaCraft.LuaStom.sandbox.instance.FastSimplexBuilderLib;
 import LuaCraft.LuaStom.sandbox.instance.InstanceManagerLib;
 import LuaCraft.LuaStom.sandbox.instance.StructureLib;
 import LuaCraft.LuaStom.sandbox.inventory.ItemStackLib;
+import LuaCraft.LuaStom.sandbox.os.LuaOs;
 import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import LuaCraft.LuaStom.sandbox.server.ServerLib;
@@ -70,7 +71,7 @@ public class ScriptHandler {
     public static void setupScriptGlobals(Globals globals, String fileName) {
         // Restrict these from the user as they can be dangerous and cause unwanted side
         // effects
-        globals.set("os", LuaValue.NIL);
+        globals.set("os", new LuaOs());
         globals.set("io", LuaValue.NIL);
         globals.set("debug", LuaValue.NIL);
         globals.set("_G", LuaValue.NIL);
@@ -78,7 +79,7 @@ public class ScriptHandler {
         // Destroy the loaded extras LuaJ might insert into LuaCraft to prevent
         // malicious code further
         LuaValue loaded = globals.get("package").get("loaded");
-        loaded.set("os", LuaValue.NIL);
+        loaded.set("os", new LuaOs());
         loaded.set("io", LuaValue.NIL);
         loaded.set("debug", LuaValue.NIL);
         loaded.set("luajava", LuaValue.NIL);
