@@ -21,6 +21,7 @@ import LuaCraft.LuaStom.globals.GlobalFunctions;
 import LuaCraft.LuaStom.sandbox.Enumerations;
 import LuaCraft.LuaStom.sandbox.LuaLogger;
 import LuaCraft.LuaStom.sandbox.component.LuaComponent;
+import LuaCraft.LuaStom.sandbox.entities.EntityLib;
 import LuaCraft.LuaStom.sandbox.entities.ItemLib;
 import LuaCraft.LuaStom.sandbox.events.ServerEvent;
 import LuaCraft.LuaStom.sandbox.instance.BiomeBuilderLib;
@@ -92,6 +93,7 @@ public class ScriptHandler {
         globals.set("Blocks", Enumerations.BlockEnums());
         globals.set("LogLevel", Enumerations.LogEnums());
         globals.set("Tags", Enumerations.TagEnums());
+        globals.set("Entities", Enumerations.EntityEnums());
 
         // Add libraries into the default scope that do not need another object to be
         // accessed
@@ -100,6 +102,7 @@ public class ScriptHandler {
         globals.set("Position", PositionLib.positionFactory());
         globals.set("ItemStack", ItemStackLib.creator());
         globals.set("ItemEntity", ItemLib.creator());
+        globals.set("Entity", EntityLib.creator());
         globals.set("Logger", new LuaLogger());
         globals.set("Component", new LuaComponent());
         globals.set("FastSimplex", FastSimplexBuilderLib.creator());

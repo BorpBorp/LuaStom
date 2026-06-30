@@ -3,6 +3,7 @@ package LuaCraft.LuaStom.sandbox;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
+import net.minestom.server.entity.EntityType;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.registry.RegistryTag;
@@ -53,6 +54,18 @@ public class Enumerations {
             String tagName = tag.key().key().asString();
             String key = tagName.replace("minecraft:", "").toUpperCase();
             tbl.set(key, LuaValue.valueOf(tagName));
+        }
+
+        return tbl;
+    }
+
+    public static LuaTable EntityEnums() {
+        LuaTable tbl = new LuaTable();
+
+        for (EntityType type : EntityType.values()) {
+            String entityName = type.key().value().toUpperCase();
+
+            tbl.set(entityName, LuaValue.valueOf(type.key().asString()));
         }
 
         return tbl;

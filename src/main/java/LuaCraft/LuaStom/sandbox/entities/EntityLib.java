@@ -13,10 +13,30 @@ import LuaCraft.LuaStom.sandbox.position.PointLib;
 import LuaCraft.LuaStom.sandbox.position.PositionLib;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
+import net.minestom.server.entity.EntityCreature;
+import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.instance.InstanceContainer;
 
 public class EntityLib extends LuaTable {
     private Entity entity;
+
+    public static LuaValue creator() {
+        LuaTable tbl = new LuaTable();
+
+        tbl.set("New", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue ent) {
+                EntityCreature newEntity = new EntityCreature(EntityType.fromKey(LuaErrorAssert.checkString(ent, "Entity.New", 1)));
+
+                if (newEntity instanceof LivingEntity) return new LivingEntityLib(newEntity);
+                
+                return new EntityLib(newEntity);
+            }
+        });
+
+        return tbl;
+    }
 
     public static final LuaTable ENTITY_METATABLE = new LuaTable();
 
@@ -34,13 +54,13 @@ public class EntityLib extends LuaTable {
                     return LuaValue.NIL; 
                 }
 
-                if (!(pos instanceof PositionLib position)) {
+                if (!(pos instanceof PointLib position)) {
                     return LuaValue.NIL;
                 }
 
                 Entity ent = entityLib.getEntity();
                 InstanceContainer instance = container.getContainer();
-                Pos instancePosition = position.getPoint();
+                Pos instancePosition = position.getPoint().asPos();
 
                 ent.setInstance(instance, instancePosition);
 

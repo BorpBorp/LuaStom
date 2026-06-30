@@ -148,7 +148,7 @@ public class PlayerLib extends LivingEntityLib {
                 if (self instanceof PlayerLib playerLib) {
                     Player ply = playerLib.getEntity();
 
-                    String tagName = LuaErrorAssert.checkString(name, "Player.SetTag", 1);
+                    String tagName = LuaErrorAssert.checkString(name, "Player:SetTag", 1);
 
                     if (value.isstring())
                         ply.setTag(Tag.String(tagName), value.tojstring());
