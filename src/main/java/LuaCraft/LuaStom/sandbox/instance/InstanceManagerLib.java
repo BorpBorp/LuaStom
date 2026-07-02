@@ -15,12 +15,13 @@ import net.minestom.server.instance.InstanceManager;
 
 public class InstanceManagerLib extends LuaTable {
     private static final ConcurrentHashMap<String, InstanceContainerLib> namedInstances = new ConcurrentHashMap<>();
-    private static InstanceManager instanceManager = MinecraftServer.getInstanceManager();
+    //private static InstanceManager instanceManager = ServerLib.getServer().getInstanceManager();
 
     public InstanceManagerLib() {
         rawset("CreateInstance", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue name) {
+                InstanceManager instanceManager = MinecraftServer.getInstanceManager();
                 String instanceName = LuaErrorAssert.checkString(name, "Instance:CreateInstance", 1);
                 InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
                 InstanceContainerLib instanceLib = new InstanceContainerLib(instanceContainer, instanceName);

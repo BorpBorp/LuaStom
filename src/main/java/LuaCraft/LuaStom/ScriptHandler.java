@@ -135,46 +135,31 @@ public class ScriptHandler {
             return;
         }
 
-        allScriptFiles.sort((a, b) -> 
-            Integer.compare(getFilePriority(b), getFilePriority(a))
-        );
-
-        if (firstLoad) {
-            logger.info("Collecting all lua script files...");
-            LuaCraft.LuaStom.sandbox.events.EventHandler eventHandler = new LuaCraft.LuaStom.sandbox.events.EventHandler();
-            eventHandler.initNodes();
-            eventHandler.initListeners(allGlobals);
-        }
+        allScriptFiles.sort((a, b) -> Integer.compare(getFilePriority(b), getFilePriority(a)));
 
         Globals sharedGlobals = JsePlatform.standardGlobals();
         setupScriptGlobals(sharedGlobals, "shared");
 
         for (File file : allScriptFiles) {
-            if (getFilePriority(file) > 0) {
-                try {
-                    LuaValue script = sharedGlobals.load(readScriptFile(file).fileContents(), file.getName());
-                    script.call();
-                } catch (IOException e) {}
-            }
-        }
+            int priority = getFilePriority(file);
 
-        for (File file : allScriptFiles) {
             Globals globals = JsePlatform.standardGlobals();
             setupScriptGlobals(globals, file.getName());
 
             LuaValue key = LuaValue.NIL;
             while (true) {
                 Varargs entry = sharedGlobals.next(key);
-                if (entry.arg1().isnil()) break;
+                if (entry.arg1().isnil())
+                    break;
                 key = entry.arg1();
-                if (key.tojstring().equals("ServerEvent")) continue;
+                if (key.tojstring().equals("ServerEvent"))
+                    continue;
                 globals.set(key, entry.arg(2));
             }
 
             FileData data = null;
             try {
                 data = readScriptFile(file);
-                logger.info("Read Lua file named " + file.getName());
             } catch (IOException e) {
             }
 
@@ -183,21 +168,26 @@ public class ScriptHandler {
                 continue;
             }
 
-            LuaValue loadedScript = globals.load(data.fileContents(), file.getName());
+            Globals targetEnvironment = (priority > -1) ? sharedGlobals : globals;
 
-            if (loadedScript != null) {
-                try {
+            try {
+                LuaValue loadedScript = targetEnvironment.load(data.fileContents(), file.getName());
+                if (loadedScript != null) {
                     loadedScript.call();
-                    logger.info("Executed Lua file named " + file.getName());
-                } catch (LuaError e) {
-                    throw new LuaError(e.getMessage());
+                    logger.info("Executed Lua file: " + file.getName() + " (Priority: " + priority + ")");
                 }
-
-                allGlobals.put(file.getName(), globals);
+            } catch (LuaError e) {
+                throw new LuaError(e.getMessage());
             }
+
+            allGlobals.put(file.getName(), globals);
         }
 
         if (firstLoad) {
+            LuaCraft.LuaStom.sandbox.events.EventHandler eventHandler = new LuaCraft.LuaStom.sandbox.events.EventHandler();
+            eventHandler.initNodes();
+            eventHandler.initListeners(allGlobals);
+
             for (Globals globals : allGlobals.values()) {
                 LuaValue serverEvent = globals.get("ServerEvent");
                 LuaValue function = serverEvent.get("OnServerStart");
@@ -258,7 +248,8 @@ public class ScriptHandler {
             if (!lines.isEmpty() && lines.get(0).startsWith("-- @Priority")) {
                 return Integer.parseInt(lines.get(0).replace("-- @Priority", "").trim());
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return 0; // default priority
     }
 }

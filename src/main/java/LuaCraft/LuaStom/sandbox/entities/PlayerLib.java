@@ -241,6 +241,19 @@ public class PlayerLib extends LivingEntityLib {
             }
         });
 
+        PLAYER_METATABLE.rawset("GetFlySpeed", new OneArgFunction() {
+            @Override
+            public LuaValue call(LuaValue self) {
+                if (self instanceof PlayerLib playerLib) {
+                    Player ply = playerLib.getEntity();
+
+                    return LuaValue.valueOf(ply.getFlyingSpeed());
+                } else {
+                    return LuaValue.NIL;
+                }
+            }
+        });
+
         PLAYER_METATABLE.rawset("SetLevel", new TwoArgFunction() {
             @Override
             public LuaValue call(LuaValue self, LuaValue exp) {
